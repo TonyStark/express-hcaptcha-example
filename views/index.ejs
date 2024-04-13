@@ -1,0 +1,44 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hCaptcha Example</title>
+    <script src="https://hcaptcha.com/1/api.js" async defer></script>
+</head>
+<body>
+    <h1>hCaptcha Example</h1>
+    <form id="captcha-form">
+      <div class="h-captcha" data-sitekey="YOUR-SITE-KEY" name="token"></div>
+      <button type="submit">Submit</button>
+    </form>
+        <div id="captcha-result"></div>
+    <script>
+        document.getElementById('captcha-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get the form data
+            const formData = new FormData(this);
+
+            // Make a POST request to verify the hCaptcha token
+            fetch('/verify', {
+                method: 'POST',
+                body: new URLSearchParams(formData),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // console.log(data)
+                // Update the UI based on the verification result
+                document.getElementById('captcha-result').textContent=data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
